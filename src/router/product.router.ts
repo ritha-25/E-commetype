@@ -15,11 +15,35 @@ const productRouter = Router();
  * @swagger
  * /api/products:
  *   get:
- *     summary: Get all products
+ *     summary: Get all products (paginated, 4 per page)
  *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number to retrieve
  *     responses:
  *       200:
- *         description: List of products
+ *         description: Paginated list of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 page:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *                 totalProducts:
+ *                   type: integer
+ *                 productsPerPage:
+ *                   type: integer
+ *                 products:
+ *                   type: array
+ *                   items:
+ *                     type: object
  */
 productRouter.get("/products", getProducts);
 

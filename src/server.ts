@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { connectDB } from "./config/database";
@@ -8,8 +7,6 @@ import productRouter from "./router/product.router";
 import cartRouter from "./router/cart.router";
 import orderRouter from "./router/order.router";
 import authRouter from "./router/auth.router";
-
-dotenv.config();
 connectDB();
 
 const app = express();

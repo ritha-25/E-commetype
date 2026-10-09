@@ -17,7 +17,6 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
         req.user = await User.findById(decoded.id).select("-password");
         next();
     } catch {
-        return res.status(401).json({ message: "Invalid token" });
     }
 };
 

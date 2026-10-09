@@ -5,8 +5,24 @@ import { sendProductRegisteredEmail } from "../utils/email";
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
-        const products = await Product.find();
-        return res.status(200).json(products);
+        const page = Math.max(1, parseInt(req.query.page as string) || 1);
+        const limit = 4;
+        const skip = (page - 1) * limit;
+
+        const [products, total] = await Promise.all([
+            Product.find().skip(skip).limit(limit),
+            Product.countDocuments(),
+        ]);
+
+        const totalPages = Math.ceil(total / limit);
+
+        return res.status(200).json({
+            page,
+            totalPages,
+            totalProducts: total,
+            productsPerPage: limit,
+            products,
+        });
     } catch (error) {
         return res.status(500).json({ message: "Failed to get products" });
     }
