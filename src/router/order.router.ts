@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { placeOrder, getOrders, getOrderById } from "../controller/order.controller";
+import { protect } from "../middleware/auth.middleware";
 
 const orderRouter = Router();
 
@@ -32,7 +33,7 @@ const orderRouter = Router();
  *       500:
  *         description: Server error
  */
-orderRouter.post("/order/:cartId", placeOrder);
+orderRouter.post("/order/:cartId", protect, placeOrder);
 
 /**
  * @swagger
@@ -44,7 +45,7 @@ orderRouter.post("/order/:cartId", placeOrder);
  *       200:
  *         description: List of orders
  */
-orderRouter.get("/orders", getOrders);
+orderRouter.get("/orders", protect, getOrders);
 
 /**
  * @swagger
@@ -64,6 +65,6 @@ orderRouter.get("/orders", getOrders);
  *       404:
  *         description: Order not found
  */
-orderRouter.get("/orders/:id", getOrderById);
+orderRouter.get("/orders/:id", protect, getOrderById);
 
 export default orderRouter;

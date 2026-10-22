@@ -6,6 +6,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     role: "admin" | "user" | "seller";
+    sellerStatus: "not_requested" | "pending" | "approved" | "rejected";
     otpCode?: string;
     otpExpires?: Date;
     comparePassword(candidate: string): Promise<boolean>;
@@ -16,6 +17,11 @@ const userSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["admin", "user", "seller"], default: "user" },
+    sellerStatus: {
+        type: String,
+        enum: ["not_requested", "pending", "approved", "rejected"],
+        default: "not_requested",
+    },
     otpCode: { type: String },
     otpExpires: { type: Date },
 });

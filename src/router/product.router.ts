@@ -1,6 +1,14 @@
 import { Router } from "express";
-import { getProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../controller/product.controller";
+import {
+    getProducts,
+    getProductById,
+    getMyProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+} from "../controller/product.controller";
 import { protect, restrictTo } from "../middleware/auth.middleware";
+import { uploadProductImages } from "../middleware/product-image-upload.middleware";
 
 const productRouter = Router();
 
@@ -69,16 +77,30 @@ productRouter.get("/products/:id", getProductById);
 
 /**
  * @swagger
+ * /api/seller/products:
+ *   get:
+ *     summary: List the signed-in seller's products (admin sees all)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Seller product inventory
+ */
+productRouter.get("/seller/products", protect, restrictTo("admin", "seller"), getMyProducts);
+
+/**
+ * @swagger
  * /api/products:
  *   post:
- *     summary: Create a product (admin only)
+ *     summary: Create a product (admin or approved seller)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required: [name, category, price]
@@ -91,6 +113,11 @@ productRouter.get("/products/:id", getProductById);
  *                 type: number
  *               stock:
  *                 type: number
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       201:
  *         description: Product created
@@ -99,13 +126,19 @@ productRouter.get("/products/:id", getProductById);
  *       403:
  *         description: Forbidden
  */
-productRouter.post("/products", protect, restrictTo("admin"), createProduct);
+productRouter.post(
+    "/products",
+    protect,
+    restrictTo("admin", "seller"),
+    uploadProductImages,
+    createProduct
+);
 
 /**
  * @swagger
  * /api/products/{id}:
  *   put:
- *     summary: Update a product (admin only)
+ *     summary: Update a product (admin or owning seller)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -117,7 +150,7 @@ productRouter.post("/products", protect, restrictTo("admin"), createProduct);
  *           type: string
  *     requestBody:
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -129,6 +162,11 @@ productRouter.post("/products", protect, restrictTo("admin"), createProduct);
  *                 type: number
  *               stock:
  *                 type: number
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       200:
  *         description: Product updated
@@ -137,13 +175,19 @@ productRouter.post("/products", protect, restrictTo("admin"), createProduct);
  *       403:
  *         description: Forbidden
  */
-productRouter.put("/products/:id", protect, restrictTo("admin"), updateProduct);
+productRouter.put(
+    "/products/:id",
+    protect,
+    restrictTo("admin", "seller"),
+    uploadProductImages,
+    updateProduct
+);
 
 /**
  * @swagger
  * /api/products/{id}:
  *   delete:
- *     summary: Delete a product (admin only)
+ *     summary: Delete a product (admin or owning seller)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -161,6 +205,6 @@ productRouter.put("/products/:id", protect, restrictTo("admin"), updateProduct);
  *       403:
  *         description: Forbidden
  */
-productRouter.delete("/products/:id", protect, restrictTo("admin"), deleteProduct);
+productRouter.delete("/products/:id", protect, restrictTo("admin", "seller"), deleteProduct);
 
 export default productRouter;

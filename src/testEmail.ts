@@ -23,7 +23,7 @@ async function main() {
         from: `"Ecommerce App" <${process.env.BREVO_SENDER_EMAIL}>`,
         to: process.env.BREVO_SENDER_EMAIL,
         subject: "Brevo Test",
-        text: "If you see this, Brevo email works.",
+        text: "Brevo works!",
     });
 
     console.log("Sent:", info.response);

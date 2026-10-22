@@ -1,5 +1,15 @@
 import { Router } from "express";
-import { register, login, forgotPassword, verifyOtp, resetPassword } from "../controller/auth.controller";
+import {
+    register,
+    login,
+    forgotPassword,
+    verifyOtp,
+    resetPassword,
+    applyToBecomeSeller,
+    getSellerApplications,
+    reviewSellerApplication,
+} from "../controller/auth.controller";
+import { protect, restrictTo } from "../middleware/auth.middleware";
 
 const authRouter = Router();
 
@@ -22,13 +32,15 @@ const authRouter = Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, email, password]
+ *             required: [name, email, password, confirmPassword]
  *             properties:
  *               name:
  *                 type: string
  *               email:
  *                 type: string
  *               password:
+ *                 type: string
+ *               confirmPassword:
  *                 type: string
  *     responses:
  *       201:
@@ -63,6 +75,69 @@ authRouter.post("/register", register);
  *         description: Invalid credentials
  */
 authRouter.post("/login", login);
+
+/**
+ * @swagger
+ * /api/auth/seller-application:
+ *   post:
+ *     summary: Apply for seller access
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Seller application submitted
+ *       409:
+ *         description: Application already pending
+ */
+authRouter.post("/seller-application", protect, applyToBecomeSeller);
+
+/**
+ * @swagger
+ * /api/auth/seller-applications:
+ *   get:
+ *     summary: List pending seller applications (admin only)
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Pending seller applications
+ */
+authRouter.get("/seller-applications", protect, restrictTo("admin"), getSellerApplications);
+
+/**
+ * @swagger
+ * /api/auth/seller-applications/{userId}:
+ *   patch:
+ *     summary: Approve or reject a seller application (admin only)
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [decision]
+ *             properties:
+ *               decision:
+ *                 type: string
+ *                 enum: [approved, rejected]
+ *     responses:
+ *       200:
+ *         description: Application reviewed
+ *       404:
+ *         description: Pending application not found
+ */
+authRouter.patch("/seller-applications/:userId", protect, restrictTo("admin"), reviewSellerApplication);
 
 /**
  * @swagger

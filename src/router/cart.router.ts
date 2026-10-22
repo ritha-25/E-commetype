@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getCart, createCart, addToCart, removeFromCart } from "../controller/cart.controller";
+import { protect } from "../middleware/auth.middleware";
 
 const cartRouter = Router();
 
@@ -22,7 +23,7 @@ const cartRouter = Router();
  *       500:
  *         description: Server error
  */
-cartRouter.post("/cart", createCart);
+cartRouter.post("/cart", protect, createCart);
 
 /**
  * @swagger
@@ -42,7 +43,7 @@ cartRouter.post("/cart", createCart);
  *       404:
  *         description: Cart not found
  */
-cartRouter.get("/cart/:cartId", getCart);
+cartRouter.get("/cart/:cartId", protect, getCart);
 
 /**
  * @swagger
@@ -76,7 +77,7 @@ cartRouter.get("/cart/:cartId", getCart);
  *       500:
  *         description: Server error
  */
-cartRouter.post("/cart/:cartId/add", addToCart);
+cartRouter.post("/cart/:cartId/add", protect, addToCart);
 
 /**
  * @swagger
@@ -103,6 +104,6 @@ cartRouter.post("/cart/:cartId/add", addToCart);
  *       500:
  *         description: Server error
  */
-cartRouter.delete("/cart/:cartId/remove/:productId", removeFromCart);
+cartRouter.delete("/cart/:cartId/remove/:productId", protect, removeFromCart);
 
 export default cartRouter;
