@@ -1,52 +1,93 @@
-import {useQuery} from '@tanstack/react-query';
-import {Link} from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import api from '../axios';
+import laptopImage from '../imagez/laptop.jpg';
+import sofaImage from '../imagez/sofa.jpg';
 
-const fetchProducts = async() =>{
-  const {data} = await api.get('/products');
+const fetchProducts = async () => {
+  const { data } = await api.get('/products');
   return data.products;
 };
 
-export default function homeP(){
-  const {data: products,isLoading,error}= useQuery({queryKey:['products'],queryFn:fetchProducts,});
-
-  if(isLoading) return 
-  <div className="text-center font-semibold">Loading products</div>;
-  if(error) return <div className ="text-center text-red-500">Error loading</div>;
+export default function Home() {
+  const { data: products = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  });
 
   return (
-    <div className="bg-orange-50 min-h-screen">
-      <div className="bg-chocolate-600 text-white text-center shadow-md mb-8">
-        <h1 className="font-bold ">Explore your wish</h1>
-        <p className="text-blue-100">Electronics,Furniture ,and fast ordering.</p>
-      </div>
+    <main className="home-page">
+      <header className="home-header">
+        <Link className="home-brand" to="/home">etry<span>.</span></Link>
+        <nav className="home-nav" aria-label="Main navigation">
+          <a href="#products">Shop</a>
+          <Link to="/login">Sign in</Link>
+          <Link className="home-signup-link" to="/signup">Join Etry</Link>
+        </nav>
+      </header>
 
-      <div className="mx-auto px-4 ">
-        <h2 className="text-bold text-navy-100 "> Trending Items</h2>
-       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products?.map((product) => (
-            <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-              <img 
-                src={product.image} 
-                alt={product.title} 
-                className="w-full h-48 object-cover bg-gray-100"
-              />
-              <div className="p-4">
-                <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">{product.category}</span>
-                <h3 className="text-sm font-medium text-gray-900 mt-1 line-clamp-2 h-10">{product.title}</h3>
-                <div className="flex items-center justify-between mt-4">
-                  <span className="text-lg font-bold text-gray-900">\${product.price}</span>
-                  <Link 
-                    to={`/product/${product.id}`} 
-                    className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                    View Item
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
+      <section className="home-hero">
+        <div className="home-hero-copy">
+          <p className="home-kicker">A marketplace made for good finds</p>
+          <h1>What<span>you’ll love.</span></h1>
+          <p className="home-hero-description">
+            Discover everyday favorites and unexpected finds from etry.
+          </p>
+          <a className="home-primary-link" href="#products">Explore products</a>
         </div>
-      </div>
-    </div>
-  )
+        <div className="home-hero-visual">
+          <div className="home-image-backdrop" />
+          <img className="home-hero-sofa" src={sofaImage} alt="A comfortable sofa for your home" />
+          <img className="home-hero-laptop" src={laptopImage} alt="A laptop for work and everyday use" />
+        </div>
+      </section>
+
+      <section className="home-products-section" id="products">
+        <div className="home-section-heading">
+          <div>
+            <p className="home-kicker">A little something for everyone</p>
+            <h2>Explore the etry</h2>
+          </div>
+          {!isLoading && !error && <p className="home-result-count">{products.length} finds</p>}
+        </div>
+
+        {isLoading && <p className="home-message">Loading products...</p>}
+        {error && (
+          <div className="home-message" role="alert">
+            <p>We couldn’t load the products. Check your connection and try again.</p>
+            <button className="home-primary-link" type="button" onClick={() => refetch()}>Try again</button>
+          </div>
+        )}
+        {!isLoading && !error && products.length === 0 && (
+          <p className="home-message">There are no products to show yet. Check back soon.</p>
+        )}
+
+        {!isLoading && !error && products.length > 0 && (
+          <div className="home-product-grid">
+            {products.map((product) => (
+              <Link className="home-product-card" key={product._id} to={`/product/${product._id}`}>
+                <div className="home-product-image">
+                  {product.images?.[0]?.url
+                    ? <img src={product.images[0].url} alt={product.name} loading="lazy" />
+                    : <span>Image coming soon</span>}
+                </div>
+                <div className="home-product-details">
+                  <p className="home-product-category">{product.category}</p>
+                  <h3>{product.name}</h3>
+                  <p className="home-product-price">${Number(product.price).toLocaleString()}</p>
+                  <span className="home-product-action">View details</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <footer className="home-footer">
+        <Link className="home-brand" to="/home">etry<span>.</span></Link>
+        <p>Yours Always.</p>
+        <span>© {new Date().getFullYear()} Etry</span>
+      </footer>
+    </main>
+  );
 }
