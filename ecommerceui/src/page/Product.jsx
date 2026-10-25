@@ -1,6 +1,7 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import api from '../axios'; 
+import AddcartButton from './Addcart'; 
 
 const fetchProductById = async (id) => {
   const { data } = await api.get(`/products/${id}`);
@@ -9,7 +10,7 @@ const fetchProductById = async (id) => {
 
 export default function ProductPag() {
   const { id } = useParams();
-  const queryClient = useQueryCleint();
+  const queryClient = useQueryClient();
 
 
   const { data: product, isLoading, error } = useQuery({
