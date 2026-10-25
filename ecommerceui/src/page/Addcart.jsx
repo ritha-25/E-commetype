@@ -2,9 +2,11 @@ import { useMutation,useQueryClient
  } from "@tanstack/react-query";
  
  import api from '../axios'
+ import { useNavigate } from "react-router-dom";
 
  export default function AddcartButton({productId}){
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const {mutate,isPending} = useMutation({
     mutationFn: async () =>{
@@ -13,6 +15,7 @@ import { useMutation,useQueryClient
     onSuccess: () => {
         alert("item added");
         queryClient.invalidateQueries({queryKey: ['cart']});
+         navigate('/cart'); 
     },
     onError: ()=>{
         alert("could not add iteme");
