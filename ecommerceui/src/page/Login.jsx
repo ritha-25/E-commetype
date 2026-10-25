@@ -1,14 +1,18 @@
 import {useState} from 'react';
 import { Link } from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
+import axios from 'axios';
 
 export function Login() {
     const [email, setEmail] = useState('');
     const[password,setPassword] = useState('');
+    const navigate = useNavigate();
 
     return (
         <main className="auth-page">
             <section className="auth-panel">
-                <Link className="auth-brand" to="/home" aria-label="Etry home">etry<span>.</span></Link>
+                {/* <Link to="/home">Sign in</Link> */}
+                <Link className="auth-brand" to="/home" aria-label="Etry home">etry</Link>
                 <div className="auth-message">
                     <p className="auth-eyebrow">A better way to shop</p>
                     <h1>Yours are closer than you think.</h1>
@@ -52,7 +56,7 @@ export function Login() {
                                 required
                             />
                         </div>
-                        <button className="auth-submit" type="submit">Sign in</button>
+                        <button type="button" onClick={() => navigate('/home')}className="auth-submit" >Sign in</button>
                     </form>
 
                     <p className="auth-switch">

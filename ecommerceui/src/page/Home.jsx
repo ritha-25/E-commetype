@@ -28,7 +28,7 @@ export default function Home() {
 
       <section className="home-hero">
         <div className="home-hero-copy">
-          <p className="home-kicker">A marketplace made for good finds</p>
+          <p className="home-kicker">Your Online market made for good finds</p>
           <h1>What<span>you’ll love.</span></h1>
           <p className="home-hero-description">
             Discover everyday favorites and unexpected finds from etry.
@@ -37,7 +37,7 @@ export default function Home() {
         </div>
         <div className="home-hero-visual">
           <div className="home-image-backdrop" />
-          <img className="home-hero-sofa" src={sofaImage} alt="A comfortable sofa for your home" />
+          <img className="home-hero-sofa" src={sofaImage} alt="A comfortable sofa " />
           <img className="home-hero-laptop" src={laptopImage} alt="A laptop for work and everyday use" />
         </div>
       </section>
@@ -74,7 +74,7 @@ export default function Home() {
                 <div className="home-product-details">
                   <p className="home-product-category">{product.category}</p>
                   <h3>{product.name}</h3>
-                  <p className="home-product-price">${Number(product.price).toLocaleString()}</p>
+                  <p className="home-product-price">RWF{Number(product.price).toLocaleString()}</p>
                   <span className="home-product-action">View details</span>
                 </div>
               </Link>

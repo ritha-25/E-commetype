@@ -34,7 +34,7 @@ function Signup() {
     return (
         <main className="auth-page">
             <section className="auth-panel">
-                <Link className="auth-brand" to="/home" aria-label="Etry home">etry<span>.</span></Link>
+                <Link className="auth-brand" to="/home" aria-label="Etry home">etry</Link>
                 <div className="auth-message">
                     <p className="auth-eyebrow">Find your next favorite</p>
                     <h1>A little more you in every day.</h1>
@@ -45,7 +45,6 @@ function Signup() {
 
             <section className="auth-content">
                 <div className="auth-card">
-                    <p className="auth-eyebrow auth-card-eyebrow">Join the community</p>
                     <h2>Create your account</h2>
                     <p className="auth-subtitle">Sign up to discover and shop your favorites.</p>
 
@@ -70,7 +69,7 @@ function Signup() {
                                 id="email"
                                 name="email"
                                 autoComplete="email"
-                                placeholder="you@example.com"
+                                placeholder="y@gmail.com"
                                 value={email}
                                 onChange={(event) => setEmail(event.target.value)}
                                 required
